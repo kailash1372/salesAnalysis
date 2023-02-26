@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.safeLoad({packages:['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart(){
+            document.getElementById('btn').addEventListener('click',function(){fun()});
+        } 
+        function fun(){
+            var days = document.getElementById('days').value;
+            var salesData = document.getElementById('salesData').value;
+            salesData = salesData.split(',');
+            var data = new google.visualization.DataTable();
+            data.addColumn('number','days');
+            data.addColumn('number','sales');
+            data.addRows(parseInt(days));
+            for(var i=0;i<parseInt(days);i++){
+                data.setCell(i,0,i+1);
+                data.setCell(i,1,salesData[i]);
+            }
+
+            var chart = new google.visualization.LineChart(document.getElementById('bar'));
+            var chart2 = new google.visualization.BarChart(document.getElementById('bar2'));
+            chart.draw(data,null);
+            chart2.draw(data,null);
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesAnalyser</title>
+</head>
+<body>
+    <div>
+        Enter the number of days:<br><input type="text" id="days"><br>
+        Enter the sales data corresponding to each day:<br><input type="text" id="salesData"><br>
+        <input type="button" id="btn" value="submit">
+        <p id="daysprint"></p>
+        <p id="salesprint"></p>
+        <p id="num"></p>
+    </div>
+    <div id="bar"></div>
+    <div id="bar2"></div>
+</body>
+</html>
