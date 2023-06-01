@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <title>salesAnalyser</title>
+    <style>
+        #navbar{
+            background-color: #EEEEEE;
+        }
+        #email{
+            color: black;
+        }
+        .logo{
+            font-size: 20pt;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-weight: 800;
+        }
+        #productcontainer{
+            display:flex;
+            justify-content: center;
+            margin-top:20px;
+            align-items: center;
+            flex-wrap: wrap;
+            max-width: 100%;
+        }
+        .pcard{
+            color:black;
+            border:2px solid #11468F;
+            height:7rem;
+            width: 100%;
+            margin-top:5px;
+            padding-left:10px;
+            padding-right:10px;
+            padding-top:0px;
+            padding-bottom: 5px;
+
+        }
+        #chart_div{
+            display:flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar" class="navbar p-3 fixed-top">
+        <a  class="navbar-brand logo" href="./products.html"><span class="text-danger logo">sales</span><span class="text-primary logo">Analysis</span> </a>
+        <span id="email" class="navbar-text justify-content-end"></span>
+    </nav>
+
+    <div class="container">
+        <div style="display: flex;justify-content: center;margin-top:70px;">
+            <nav class="navbar justify-content-center rounded-top rounded-4 w-25" style="background-color: #eeeeee85;">
+                <span class="navbar-text text-black">Products</span>
+            </nav>
+        </div>
+        <div id="chart_div"></div>
+        <div id="productcontainer">
+            <div class="border rounded-3 p-2" style="background-color: #041562; display:flex;justify-content: center;align-items:center;width: 100%;">
+                <button onclick="addProduct()" style="border:0px;border-radius: 50%;height:55px;width: 55px;text-align: center;font-size: 24px;">+</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+                                       <!-- JavaScript Section -->
+
+
+    
+
+    <!-- firebase libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCMZHKLeMaNV5FX8USnq8ramPeq6Bx1YEc",
+            authDomain: "salesanalyser-9a0b3.firebaseapp.com",
+            projectId: "salesanalyser-9a0b3",
+            storageBucket: "salesanalyser-9a0b3.appspot.com",
+            messagingSenderId: "203125898322",
+            appId: "1:203125898322:web:51ce6d9e4a7de4fe20338b"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const uid = JSON.parse(sessionStorage.getItem('uid'));
+        var ref = db.collection("users").doc(uid);
+
+        var email;
+         ref.get().then((doc)=>{
+            if(doc.exists){
+                email = doc.data().companyName;
+                document.getElementById('email').innerHTML = email;
+            }
+            else{
+                console.log("doc dont exists");
+            }
+        });
+
+
+        var container = document.getElementById('productcontainer');
+    
+        const products = ref.collection("allproducts");
+        products.get().then(
+            (querySnapshot) =>{
+                querySnapshot.forEach((doc)=>{
+                    container.insertAdjacentHTML('afterbegin', '<div class=" rounded-3 pcard"><h5>'+doc.id+'</h5></div>');
+                });
+            })
+            .catch((error) => {
+                console.log('Error getting product names: ', error);
+            });
+    </script>    
+
+    <script>
+        function addProduct(){
+            window.location.href ="./addProduct.html";
+        }        
+    </script>
+
+
+
+    <script src="./products.js"></script>
+    <!-- bootstrap js library -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+</body>
+</html>
