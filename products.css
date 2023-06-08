@@ -1,0 +1,68 @@
+#navbar{
+    background-color: #EEEEEE;
+}
+#email{
+    color: black;
+}
+.logo{
+    font-size: 20pt;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: 800;
+}
+#productcontainer{
+    display:flex;
+    justify-content: center;
+    margin-top:20px;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+.pcard{
+    float:left;
+    color:black;
+    border:2px solid #11468F;
+    height:7rem;
+    width: 100%;
+    margin-top:5px;
+    padding-left:10px;
+    padding-right:10px;
+    padding-top:0px;
+    padding-bottom: 5px;
+
+}
+#chart_div{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contents{
+    display: flex;
+    justify-content: center;
+    margin-top:70px;
+}
+
+.addbtnclass{
+    background-color: #041562;
+     display:flex;
+     justify-content: center;
+     align-items:center;
+     width: 100%;
+}
+
+#addbtn{
+    border:0px;
+    border-radius: 50%;
+    height:55px;
+    width: 55px;
+    text-align: center;
+    font-size: 24px;
+}
+
+#logout{
+    border:0px;
+}
+
+.detailsbtn{
+    float:right;
+}
