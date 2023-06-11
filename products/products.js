@@ -1,3 +1,6 @@
+var d = {1:25,2:20,3:18,4:30,5:70,6:72,7:69,8:80,9:100,10:90}
+
+
 //google charts section
 
 google.charts.load('current', {'packages':['corechart','line']});
@@ -53,25 +56,7 @@ function getMaxAndMinAndSum(){
     return arr;
 }
 
-
-
-
-
-
-
 //firebase section
-
-var email;
-ref.get().then((doc)=>{
-   if(doc.exists){
-       companyName = doc.data().companyName;
-       document.getElementById('logout').innerHTML = companyName;
-   }
-   else{
-       console.log("doc dont exists");
-   }
-});
-
 
 var container = document.getElementById('productcontainer');
 
@@ -88,37 +73,11 @@ products.get().then(
 
 
 function addProduct(){
-    window.location.href ="./addProduct.html";
-}  
-var cName=1;
-function logout(){
-    if(cName==1){
-        document.getElementById('logout').innerHTML = "logout";
-        cName=0;
-    }
-    else{
-        firebase.auth().signOut().then(() => {
-            alert("signout success");
-            window.location.href = "./login.html";
-          }).catch((error) => {
-            console.log(error);
-          });
-    }
+    window.location.href ="../addProduct/addProduct.html";
 }
 
 function details(docid){
 
     sessionStorage.setItem('docid',JSON.stringify(docid));
-    window.location.href = "./details.html"
-    const detRef = ref.collection("allproducts").doc(docid).collection("data").doc("january");
-    detRef.get().then((doc)=>{
-        if(doc.exists){
-            var info = doc.data();
-            
-        }
-        else{
-            console.log("no such document exists")
-        }
-    })
-    
+    window.location.href = "../details/details.html"    
 }

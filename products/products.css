@@ -1,14 +1,3 @@
-#navbar{
-    background-color: #EEEEEE;
-}
-#email{
-    color: black;
-}
-.logo{
-    font-size: 20pt;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-weight: 800;
-}
 #productcontainer{
     display:flex;
     justify-content: center;
@@ -36,12 +25,6 @@
     align-items: center;
 }
 
-.contents{
-    display: flex;
-    justify-content: center;
-    margin-top:70px;
-}
-
 .addbtnclass{
     background-color: #041562;
      display:flex;
@@ -57,10 +40,6 @@
     width: 55px;
     text-align: center;
     font-size: 24px;
-}
-
-#logout{
-    border:0px;
 }
 
 .detailsbtn{

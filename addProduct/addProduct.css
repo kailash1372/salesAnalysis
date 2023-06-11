@@ -1,0 +1,33 @@
+.boxparent{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height:100vh;
+}
+
+
+.realbox{
+    display: grid;
+    border: 1px solid black;
+    
+    width: max-content;
+    height: max-content;
+    padding-top: 5%;
+    padding-bottom: 5%;
+    padding-left:10%;
+    padding-right:10%;
+    
+}
+input{
+    padding:5px;
+    margin-bottom: 5px;
+}
+
+.dropdown{
+    margin-bottom: 35px;
+}
+
+.dataEnter{
+    display:none;
+    
+}
