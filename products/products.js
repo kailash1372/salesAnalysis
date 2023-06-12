@@ -1,61 +1,3 @@
-var d = {1:25,2:20,3:18,4:30,5:70,6:72,7:69,8:80,9:100,10:90}
-
-
-//google charts section
-
-google.charts.load('current', {'packages':['corechart','line']});
-google.charts.setOnLoadCallback(drawMaxMinChart); 
-
-var size = Object.keys(d).length;
-var arr = getMaxAndMinAndSum();
-
-function drawMaxMinChart() {
-    
-    var data = new google.visualization.DataTable();
-    data.addColumn('number', 'Days');
-    data.addColumn('number', 'Sales');
-    data.addColumn({type:'string',role:'style'});
-    data.addRows(size+1);
-    var i = 1;
-    while(i<=size+1){
-        data.setCell(i-1,0,i,);
-        data.setCell(i-1,1,d[i-1]);
-        if(d[i-1]==arr[0])data.setCell(i-1,2,'green');
-        if(d[i-1]==arr[1])data.setCell(i-1,2,'red');
-
-        i=i+1;
-    }
-
-    // Set chart options
-    var options = {'title':'Max:Green||Min:Red',
-                    'width':400,
-                    'height':300};
-
-    // Instantiate and draw our chart, passing in some options.
-
-    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-    chart.draw(data,options);
-}
-
-function getMaxAndMinAndSum(){
-    var i=1;
-    var arr = new Array(3);
-    arr[0]=d[1];
-    arr[1]=d[1];
-    arr[2]=d[1];
-
-    while(i<=size+1){
-        if(d[i]>arr[0])arr[0] = d[i];
-        if(d[i]<arr[1])arr[1] = d[i];
-        arr[2]+=d[i];
-        //console.log("min:"+arr[1]+d[1])
-
-        i=i+1;
-    }
-
-    return arr;
-}
-
 //firebase section
 
 var container = document.getElementById('productcontainer');
@@ -64,7 +6,7 @@ const products = ref.collection("allproducts");
 products.get().then(
    (querySnapshot) =>{
        querySnapshot.forEach((doc)=>{
-           container.insertAdjacentHTML('afterbegin', '<div class="rounded-3 pcard"><h5>'+doc.id+'</h5><button class="btn btn-warning detailsbtn" onclick="details(\''+doc.id+'\')">view details</button></div>');
+           container.insertAdjacentHTML('afterbegin', '<div class="rounded-3 pcard"><div class="h5card"><h5>'+doc.id+'</h5></div><div class="btnclass"><button class="btn btn-success" onclick="addData(\''+doc.id+'\')">add data</button><button class="btn btn-warning" onclick="details(\''+doc.id+'\')">view details</button></div></div>');
        });
 })
 .catch((error) => {
@@ -76,8 +18,56 @@ function addProduct(){
     window.location.href ="../addProduct/addProduct.html";
 }
 
+function addData(docid){
+    sessionStorage.setItem('docid',JSON.stringify(docid));
+    window.location.href = "../addData/addData.html";
+}
+
 function details(docid){
 
     sessionStorage.setItem('docid',JSON.stringify(docid));
     window.location.href = "../details/details.html"    
 }
+
+var date = new Date();
+date = date.toDateString();
+date = date.split(' ');
+
+jsMonth = {"Jan":1,"Feb":2,"Mar":3,"Apr":4,"May":5,"Jun":6,"Jul":7,"Aug":8,"Sep":9,"Oct":10,"Nov":11,"Dec":12}
+monthMap = {1:"January",2:"February",3:"March",4:"April",5:"May",6:"June",7:"July",8:"August",9:"September",10:"October",11:"November",12:"December"}
+jsmonthvalue = monthMap[jsMonth[date[1]]];
+
+var productunitspermonth = [['productName', 'monthlySales']];
+var index = 0;
+
+ref.collection("allproducts").get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+        const productname = doc.id;
+        ref.collection("allproducts").doc(productname).collection("data").doc(jsmonthvalue).get().then((doc) => {
+            var t = doc.data().total;
+            var productData = [productname, t];
+            productunitspermonth.push(productData);
+            index = index + 1;
+
+            if (index === querySnapshot.size) {
+                drawMonthlySales();
+            }
+        });
+    });
+});
+
+function drawMonthlySales() {
+    google.charts.load('current', { packages: ['corechart', 'bar'] });
+    google.charts.setOnLoadCallback(() => {
+        var data = google.visualization.arrayToDataTable(productunitspermonth);
+        var chart = new google.visualization.ColumnChart(document.getElementById('monthlyunitssold'));
+        chart.draw(data);
+    });
+}
+
+
+// ref.collection("allproducts").get().then((querySnapshot)=>{
+//     querySnapshot.forEach((doc)=>{
+
+//     });
+// });

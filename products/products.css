@@ -7,16 +7,16 @@
     max-width: 100%;
 }
 .pcard{
-    float:left;
+    display:flexbox;    
     color:black;
     border:2px solid #11468F;
-    height:7rem;
+    /* height:7rem; */
     width: 100%;
     margin-top:5px;
-    padding-left:10px;
-    padding-right:10px;
-    padding-top:0px;
-    padding-bottom: 5px;
+    padding-left:15px;
+    padding-right:15px;
+    padding-top:15px;
+    padding-bottom: 15px;
 
 }
 #chart_div{
@@ -42,6 +42,18 @@
     font-size: 24px;
 }
 
-.detailsbtn{
+.btnclass{
+    display: grid;
     float:right;
+    justify-content: end;
+
+}
+
+.h5card{
+    width: min-content;
+    float:left;
+}
+
+.btn-success{
+    margin-bottom: 5px;
 }

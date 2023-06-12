@@ -39,6 +39,14 @@ async function addProduct() {
                 .set(info, { merge: true }
             );
         }
+
+        await ref
+                .collection("allproducts")
+                .doc(productname)
+                .collection("data")
+                .doc(monthvalue)
+                .set({total:total}, { merge: true }
+        );
         
         await ref.collection("allproducts").doc(productname).set(
             { fixedcost: fixedcosts,
