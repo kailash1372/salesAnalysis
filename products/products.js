@@ -1,16 +1,18 @@
 //firebase section
 
 var container = document.getElementById('productcontainer');
-
+var productsArr = [];
 const products = ref.collection("allproducts");
 products.get().then(
-   (querySnapshot) =>{
-       querySnapshot.forEach((doc)=>{
-           container.insertAdjacentHTML('afterbegin', '<div class="rounded-3 pcard"><div class="h5card"><h5>'+doc.id+'</h5></div><div class="btnclass"><button class="btn btn-success" onclick="addData(\''+doc.id+'\')">add data</button><button class="btn btn-warning" onclick="details(\''+doc.id+'\')">view details</button></div></div>');
-       });
+  (querySnapshot) =>{
+    querySnapshot.forEach((doc)=>{
+      container.insertAdjacentHTML('afterbegin', '<div class="rounded-3 pcard"><div class="h5card"><h5>'+doc.id+'</h5></div><div class="btnclass"><button class="btn btn-success" onclick="addData(\''+doc.id+'\')">add data</button><button class="btn btn-warning" onclick="details(\''+doc.id+'\')">view details</button></div></div>');
+      productsArr.push(doc.id);
+      if(productsArr.length==querySnapshot.size)firstChartData(productsArr);
+    });
 })
 .catch((error) => {
-    console.log('Error getting product names: ', error);
+  console.log('Error getting product names: ', error);
 });
 
 
@@ -40,22 +42,20 @@ var jsmonthvalue = monthMap[jsMonth[date[1]]];
 var productunitspermonth = [['productName', 'monthlySales']];
 var index = 0;
 
-ref.collection("allproducts").get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-        const productname = doc.id;
-        ref.collection("allproducts").doc(productname).collection("data").doc(jsmonthvalue).get().then((doc) => {
-            var t = doc.data().total;
-            var productData = [productname, t];
-            productunitspermonth.push(productData);
-            index = index + 1;
-
-            if (index === querySnapshot.size) {
-                drawProductSales();
-            }
-        });
+function firstChartData(productsArr){
+  for(var i=0;i<productsArr.length;i++){
+    let pname = productsArr[i];
+    ref.collection("allproducts").doc(pname).collection("data").doc(jsmonthvalue).get().then((doc) => {
+      var t = doc.data().total;
+      var productData = [pname, t];
+      productunitspermonth.push(productData);
+      index = index + 1;
+      if (index === productsArr.length) {
+          drawProductSales();
+      }
     });
-});
-
+  }
+}
 function drawProductSales() {
     google.charts.load('current', { packages: ['corechart', 'bar'] });
     google.charts.setOnLoadCallback(() => {
@@ -64,8 +64,6 @@ function drawProductSales() {
         chart.draw(data);
     });
 }
-
-
 const MonthMap = new Map();
 var times = 0;
 var totalDocs = 0;
@@ -73,8 +71,6 @@ var totalDocs = 0;
 async function fetchData() {
   const querySnapshot = await ref.collection("allproducts").get();
   totalDocs = querySnapshot.size;
-//   console.log(totalDocs)
-
   for (const doc of querySnapshot.docs) {
     times++;
     var pname = doc.id;

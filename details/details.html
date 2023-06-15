@@ -19,17 +19,73 @@
     </nav>
 
 
-    <div>
-        <div class="card-group tmargin">
-            <div class="card bg-light ">
+    <div class="container">
+        <div class="contents">
+            <nav class="navbar justify-content-center rounded-top rounded-4 w-25" style="background-color: #eeeeee85;">
+                <span id="pname" class="navbar-text text-black"></span>
+            </nav>
+        </div>
+        <div class="card bg-light ">
+            <div class="card-body">
                 <div class="card-header">Break Even Analysis</div>
-                <div id="chart_div"></div>
+                <div id="chart_div" class="w-100"></div>
+            </div>
+        </div>
+        <div class="card-group tmargin">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="card-header">Maximum Sales & Minimum Sales</div>
+                    <div id="chart_div2" class="w-100"></div>
+                </div>
             </div>
             <div class="card bg-light">
-                <div class="card-header">Maximum Sales</div>
-                <div id="chart_div2"></div>
+                <div class="card-body">
+                    <div class="card-header">Current Month Trend</div>
+                    <div id="curMonthTrend" class="w-100"></div>
+                </div>
             </div>
         </div> 
+        <div class="crdgrptitle border rounded bg-light">
+            <div class="title"><h2>Quaterly Analysis</h2></div>
+            <div class="card-group">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <div class="card-header">Q1</div>
+                        <div id="q1bar"></div>
+                    </div>
+                </div>
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <div class="card-header">Q2</div>
+                        <div id="q2bar"></div>
+                    </div>
+                </div>
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <div class="card-header">Q3</div>
+                        <div id="q3bar"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-group">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <div id="q1line"></div>
+                    </div>
+                </div>
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <div id="q2line"></div>
+                    </div>
+                </div>
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <div id="q3line"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
   
