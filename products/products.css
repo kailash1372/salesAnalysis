@@ -61,3 +61,11 @@
 .contents{
     margin-bottom: 5px;
 }
+
+.bold{
+    font-weight: 600;
+}
+
+.text-small{
+    font-size: 0.8rem;
+}
