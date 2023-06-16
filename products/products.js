@@ -46,6 +46,7 @@ function firstChartData(productsArr){
   for(var i=0;i<productsArr.length;i++){
     let pname = productsArr[i][0];
     let psellp = productsArr[i][1];
+    console.log(psellp)
     ref.collection("allproducts").doc(pname).collection("data").doc(jsmonthvalue).get().then((doc) => {
       var t = doc.data().total;
       var productData = [pname, t];

@@ -12,3 +12,19 @@
 .crdgrptitle{
     margin-top:10px;
 }
+
+.bold{
+    font-weight: 600;
+}
+
+.text-small{
+    font-size: 0.8rem;
+}
+
+#chart_div{
+    min-height: 25rem;
+}
+
+.c-h{
+    min-height: 20rem;
+}

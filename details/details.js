@@ -28,6 +28,8 @@ ref.collection("allproducts").doc(docid).get().then((doc)=>{
     });
 });
 function drawBEA(fc,vc,sp){
+    let margin = sp-vc;
+    let bep = fc/margin;
     let sorted = [['Month','Revenue','Expenses']]
     let revenue = 0;
     let expense= fc;
@@ -50,17 +52,36 @@ function drawBEA(fc,vc,sp){
             }
         };
         chart.draw(data,options);
+        bepDescription(bep,sorted[sorted.length-1]);
     });
+}
+var InsertHead = "<h6>Insights</h6>"
+var listStart = "<ul class=\"text-small\">"
+var listEnd = "</ul>"
+var bolds = "<span class=\"bold\">"
+var bolde = "</span>"
+function bepDescription(bep,arr){
+    let l1 = "<li>Number of units sales required to reach BEP:"+bolds+parseInt(bep,10)+bolde+" units</li>";
+    let l2 = "<li>The Revenue at which BEP is achieved is: "+bolds+"Rs."+parseInt(bep*sp)+bolde+"</li>";
+    let l3 = "<li>The product "+bolds+docid+bolde+" ";
+    if(arr[1]>bep*sp){
+        l3+="has crossed it's BEP.</li>";
+    }
+    else{
+        l3+="is yet to reach it's BEP.</li>";
+    }
+    document.getElementById("beaDescription").innerHTML = InsertHead+listStart+l1+l2+l3+listEnd;
 }
 
 function drawMinandMax(obj){
     let size = Object.keys(obj).length-1;
     let minmax = getMinMax(obj,size);
-    let arr = [['Day','Sales',{role:'style'}]]
+    let arr = [['Day','Sales',{role:'style'}]];
+    let store = new Array(2);
     for(let i=1;i<=size;i++){
         let temp = []
-        if(obj[i]==minmax[0])temp = [i,obj[i],'green']
-        else if(obj[i]==minmax[1])temp = [i,obj[i],'red']
+        if(obj[i]==minmax[0]){temp = [i,obj[i],'green'];store[0]=[i,obj[i]];}
+        else if(obj[i]==minmax[1]){temp = [i,obj[i],'red'];store[1]=[i,obj[i]];}
         else temp = [i,obj[i],'#3366cc']
         arr.push(temp);
     }
@@ -69,7 +90,15 @@ function drawMinandMax(obj){
         var data = google.visualization.arrayToDataTable(arr);
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div2'));
         chart.draw(data);
+        MinMaxDescription(store);
     });
+}
+
+function MinMaxDescription(store){
+    let l1 = "<li>The maximum sales were observed on "+bolds+store[0][0]+"th day"+bolde+" of this month,with "+bolds+store[0][1]+" units sold."+bolde+"</li>";
+    let l2 = "<li>The minimum sales were observed on "+bolds+store[1][0]+"th day"+bolde+" of this month,"+"</br>"+"with only "+bolds+store[1][1]+" units sold."+bolde+"</li>";
+
+    document.getElementById("MinMaxDescription").innerHTML = InsertHead+listStart+l1+l2+listEnd;
 }
 
 function getMinMax(obj,size){
@@ -97,21 +126,26 @@ function drawCurMonthTrend(obj){
 
 
 function drawQtrend(){
-    let q1=[['Month','Total Sales']];
-    let q2=[['Month','Total Sales']];
-    let q3=[['Month','Total Sales']];
+    let q1=[['Month','Total Sales',{role:'style'}]];
+    let q2=[['Month','Total Sales',{role:'style'}]];
+    let q3=[['Month','Total Sales',{role:'style'}]];
 
     for(let i=1;i<=12;i++){
         if(i<=4){
-            q1.push([monthMap[i],everyMonthTotal.get(monthMap[i])]);
+            q1.push([monthMap[i],everyMonthTotal.get(monthMap[i]),'#3366cc']);
         }
         else if(i<=8){
-            q2.push([monthMap[i],everyMonthTotal.get(monthMap[i])]);
+            q2.push([monthMap[i],everyMonthTotal.get(monthMap[i]),'#3366cc']);
         }
         else{
-            q3.push([monthMap[i],everyMonthTotal.get(monthMap[i])]);
+            q3.push([monthMap[i],everyMonthTotal.get(monthMap[i]),'#3366cc']);
         }
     }
+
+    findAndSet(q1,q1barIns);
+    findAndSet(q2,q2barIns);
+    findAndSet(q3,q3barIns);
+
 
     google.charts.load('current',{packages:['corechart','line']});
     google.charts.setOnLoadCallback(()=>{
@@ -120,6 +154,8 @@ function drawQtrend(){
         chart.draw(data);
         var chart = new google.visualization.LineChart(document.getElementById('q1line'));
         chart.draw(data);
+
+        
 
     });
     google.charts.load('current',{packages:['corechart','line']});
@@ -139,6 +175,28 @@ function drawQtrend(){
         chart.draw(data);
 
     });
+}
+
+function findAndSet(q,id){
+    let max=q[1][1];
+    let maxIndex=1;
+    let min=q[1][1];
+    let minIndex = 1;
+    for(let i=1;i<=4;i++){
+        if(q[i][1]>max){max = q[i][1]; maxIndex = i;}
+        if(q[i][1]<min){min = q[i][1]; minIndex = i;}
+    }
+    q[maxIndex][2] = 'green';
+    q[minIndex][2] = 'red';
+
+    // qDescription([max,q[maxIndex][0],min,q[minIndex][0]],id);
+}
+
+function qDescription(store,idName){
+    let l1 = "<li>The maximum sales were observed in "+bolds+store[1]+bolde+", with "+bolds+store[0]+" units sold."+bolde+"</li>";
+    let l2 = "<li>The minimum sales were observed on "+bolds+store[3]+bolde+"</br>"+", with only "+bolds+store[2]+" units sold."+bolde+"</li>";
+
+    document.getElementById(idName).innerHTML = InsertHead+listStart+l1+l2+listEnd;
 }
 
 // ref.collection("allproducts").doc(docid).get().then((doc) => {
