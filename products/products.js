@@ -8,7 +8,7 @@ products.get().then(
     querySnapshot.forEach((doc)=>{
       container.insertAdjacentHTML('afterbegin', '<div class="rounded-3 pcard"><div class="h5card"><h5>'+doc.id+'</h5></div><div class="btnclass"><button class="btn btn-success" onclick="addData(\''+doc.id+'\')">add data</button><button class="btn btn-warning" onclick="details(\''+doc.id+'\')">view details</button></div></div>');
       productsArr.push([doc.id,doc.data().sellingprice]);
-      if(productsArr.length==querySnapshot.size)firstChartData(productsArr);
+      if(productsArr.length==querySnapshot.size)firstChartData(productsArr,jsmonthvalue);
     });
 })
 .catch((error) => {
@@ -47,13 +47,29 @@ var productunitspermonth = [['productName', 'monthlySales']];
 var index = 0;
 var insightsArr = [];
 
-function firstChartData(productsArr){
+// function pMonth(){
+//   let val = jsMonth[jsmonthvalue.substring(0,3)];
+//   val =val-1;
+//   console.log(val)
+//   jsmonthvalue = monthMap[val];
+//   firstChartData(productsArr,jsmonthvalue); 
+// }
+
+function nMonth(){
+  let val = jsMonth[jsmonthvalue.substring(0,3)];
+  val =val+1;
+  console.log(val)
+  jsmonthvalue = monthMap[val];
+  firstChartData(productsArr,jsmonthvalue); 
+}
+
+function firstChartData(productsArr,month){
   for(var i=0;i<productsArr.length;i++){
     let pname = productsArr[i][0];
     let psellp = productsArr[i][1];
     // let psellp = [];
     // console.log(psellp)
-    ref.collection("allproducts").doc(pname).collection("data").doc(jsmonthvalue).get().then((doc) => {
+    ref.collection("allproducts").doc(pname).collection("data").doc(month).get().then((doc) => {
       if(doc.exists){
         var t = doc.data().total;
         insightsArr.push([pname,psellp,t]);
