@@ -33,9 +33,13 @@ function drawBEA(fc,vc,sp){
     let sorted = [['Month','Revenue','Expenses']]
     let revenue = 0;
     let expense= fc;
+    let t=0;
+    let flag=0;
     for(let i=1;i<=12;i++){
         // ordered.push([monthMap[i],everyMonthTotal.get(monthMap[i])]);
         let total = everyMonthTotal.get(monthMap[i]);
+        t+=total;
+        if(t>bep&&flag==0){sorted.push(["BEP",parseInt((bep)*sp),parseInt((bep)*sp)]);flag=1;}
         revenue+=(total*sp);
         expense+=(total*vc);
         let temp = [monthMap[i],revenue,expense];
@@ -49,7 +53,8 @@ function drawBEA(fc,vc,sp){
         var options = {
             hAxis: {
                 format:"#"
-            }
+            },
+            legend:{position:'bottom'}
         };
         chart.draw(data,options);
         bepDescription(bep,sorted[sorted.length-1]);
@@ -89,7 +94,7 @@ function drawMinandMax(obj){
     google.charts.setOnLoadCallback(()=>{
         var data = google.visualization.arrayToDataTable(arr);
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div2'));
-        chart.draw(data);
+        chart.draw(data,options);
         MinMaxDescription(store);
     });
 }
@@ -120,8 +125,103 @@ function drawCurMonthTrend(obj){
     google.charts.setOnLoadCallback(()=>{
         var data = google.visualization.arrayToDataTable(arr);
         var chart = new google.visualization.LineChart(document.getElementById('curMonthTrend'));
-        chart.draw(data);
+        var msg="";
+        google.visualization.events.addListener(chart, 'ready', function() {
+            msg = analyzeTrend(data);
+        });
+        chart.draw(data,options);
+        TrendDetails(parseInt(obj.total/size),msg);
+        drawWeeklyBar(arr);
     });
+}
+
+function TrendDetails(i,msg){
+    let l1 = "<li>Average sales per day:"+bolds+i+" units"+bolde+"</li>";
+    let l2 = "<li>"+msg+"</li>";
+    document.getElementById("cmtDescription").innerHTML = InsertHead + listStart + l1 + l2 + listEnd;
+}
+
+function analyzeTrend(data) {
+    var upwardCount = 0;
+    var downwardCount = 0;
+    var numDataPoints = data.getNumberOfRows();
+  
+    for (var i = 1; i < numDataPoints; i++) {
+      var y1 = data.getValue(i - 1, 1);
+      var y2 = data.getValue(i, 1);
+  
+      if (y1 < y2) {
+        upwardCount++;
+      } else if (y1 > y2) {
+        downwardCount++;
+      }
+    }
+  
+    if (upwardCount > downwardCount) {
+      return('The trend has '+bolds+'major ups'+bolde+',the sales are '+bolds+'consistent and growing.'+bolde);
+    } else if (downwardCount > upwardCount) {
+      return('The trend has '+bolds+'major downfalls'+bolde+',the sales are '+bolds+'inconsistent.'+bolde);
+    } else {
+      return('The trend is mixed or flat.');
+    }
+  }
+  
+
+function drawWeeklyBar(arr){
+    let w1=[['Day','Total Sales',{role:'style'}]];
+    let w2=[['Day','Total Sales',{role:'style'}]];
+    let w3=[['Day','Total Sales',{role:'style'}]];
+    let w4=[['Day','Total Sales',{role:'style'}]];
+
+    for(let i=1;i<arr.length;i++){
+        if(i<=7){
+            w1.push([arr[i][0],arr[i][1],'#3366cc']);
+        }
+        else if(i<=14){
+            w2.push([arr[i][0],arr[i][1],'#3366cc']);
+        }
+        else if(i<=21){
+            w3.push([arr[i][0],arr[i][1],'#3366cc']);
+        }
+        else{
+            w4.push([arr[i][0],arr[i][1],'#3366cc']);
+        }
+    }
+
+    findAndSet(w1,"w1barIns");
+    findAndSet(w2,"w2barIns");
+    findAndSet(w3,"w3barIns");
+    findAndSet(w4,"w4barIns");
+
+
+    google.charts.load('current',{packages:['corechart','line']});
+    google.charts.setOnLoadCallback(()=>{
+        var data = google.visualization.arrayToDataTable(w1);
+        var chart = new google.visualization.ColumnChart(document.getElementById('w1bar'));
+        chart.draw(data,options);
+    });
+
+    google.charts.setOnLoadCallback(()=>{
+        var data = google.visualization.arrayToDataTable(w2);
+        var chart = new google.visualization.ColumnChart(document.getElementById('w2bar'));
+        chart.draw(data,options);
+    });
+
+    google.charts.setOnLoadCallback(()=>{
+        var data = google.visualization.arrayToDataTable(w3);
+        var chart = new google.visualization.ColumnChart(document.getElementById('w3bar'));
+        chart.draw(data,options);
+    });
+
+    google.charts.setOnLoadCallback(()=>{
+        var data = google.visualization.arrayToDataTable(w4);
+        var chart = new google.visualization.ColumnChart(document.getElementById('w4bar'));
+        chart.draw(data,options);
+    });
+}
+
+var options = {
+    legend: { position: 'bottom' }
 }
 
 
@@ -142,18 +242,18 @@ function drawQtrend(){
         }
     }
 
-    findAndSet(q1,q1barIns);
-    findAndSet(q2,q2barIns);
-    findAndSet(q3,q3barIns);
+    findAndSet(q1,"q1barIns");
+    findAndSet(q2,"q2barIns");
+    findAndSet(q3,"q3barIns");
 
 
     google.charts.load('current',{packages:['corechart','line']});
     google.charts.setOnLoadCallback(()=>{
         var data = google.visualization.arrayToDataTable(q1);
         var chart = new google.visualization.ColumnChart(document.getElementById('q1bar'));
-        chart.draw(data);
-        var chart = new google.visualization.LineChart(document.getElementById('q1line'));
-        chart.draw(data);
+        chart.draw(data,options);
+        // var chart = new google.visualization.LineChart(document.getElementById('q1line'));
+        // chart.draw(data);
 
         
 
@@ -162,17 +262,17 @@ function drawQtrend(){
     google.charts.setOnLoadCallback(()=>{
         var data = google.visualization.arrayToDataTable(q2);
         var chart = new google.visualization.ColumnChart(document.getElementById('q2bar'));
-        chart.draw(data);
-        var chart = new google.visualization.LineChart(document.getElementById('q2line'));
-        chart.draw(data);
+        chart.draw(data,options);
+        // var chart = new google.visualization.LineChart(document.getElementById('q2line'));
+        // chart.draw(data);
     });
     google.charts.load('current',{packages:['corechart','line']});
     google.charts.setOnLoadCallback(()=>{
         var data = google.visualization.arrayToDataTable(q3);
         var chart = new google.visualization.ColumnChart(document.getElementById('q3bar'));
-        chart.draw(data);
-        var chart = new google.visualization.LineChart(document.getElementById('q3line'));
-        chart.draw(data);
+        chart.draw(data,options);
+        // var chart = new google.visualization.LineChart(document.getElementById('q3line'));
+        // chart.draw(data);
 
     });
 }
@@ -189,13 +289,13 @@ function findAndSet(q,id){
     q[maxIndex][2] = 'green';
     q[minIndex][2] = 'red';
 
-    // qDescription([max,q[maxIndex][0],min,q[minIndex][0]],id);
+    qDescription([max,q[maxIndex][0],min,q[minIndex][0]],id);
 }
 
 function qDescription(store,idName){
     let l1 = "<li>The maximum sales were observed in "+bolds+store[1]+bolde+", with "+bolds+store[0]+" units sold."+bolde+"</li>";
     let l2 = "<li>The minimum sales were observed on "+bolds+store[3]+bolde+"</br>"+", with only "+bolds+store[2]+" units sold."+bolde+"</li>";
-
+    // console.log(idName)
     document.getElementById(idName).innerHTML = InsertHead+listStart+l1+l2+listEnd;
 }
 
